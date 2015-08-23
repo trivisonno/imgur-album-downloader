@@ -116,6 +116,7 @@ class ImgurAlbumDownloader:
         If no foldername is given, it'll use the cwd and the album key.
         And if the folder doesn't exist, it'll try and create it.
         """
+        image_array = []
         # Try and create the album folder:
         if foldername:
             albumFolder = foldername
@@ -142,14 +143,13 @@ class ImgurAlbumDownloader:
             for fn in self.image_callbacks:
                 fn(counter, image_url, path)
 
-            # Actually download the thing
-            if os.path.isfile(path):
-                print ("Skipping, already exists.")
-            else:
-                try:
-                    urllib.request.urlretrieve(image_url, path)
-                except:
-                    print ("Download failed.")
+            # Fetch images over HTTPS
+            image_url = image_url.replace('http','https')    
+            #print("<a name=\"page_"+str(counter)+"\"><div class=\"page_break\"><span class=\"page_num\">Page "+str(counter)+"</span>")
+            #print("<img class=\"lazy img-responsive\" data-original=\""+image_url+"\" width=\"100%\"></div></a>")
+            #print(image[1])
+            image_array.append(image[1])
+        print(image_array)    
 
         # Run the complete callbacks:
         for fn in self.complete_callbacks:
@@ -170,16 +170,16 @@ if __name__ == '__main__':
         print(("Found {0} images in album".format(downloader.num_images())))
 
         # Called when an image is about to download:
-        def print_image_progress(index, url, dest):
-            print(("Downloading Image %d" % index))
-            print(("    %s >> %s" % (url, dest)))
-        downloader.on_image_download(print_image_progress)
+        #def print_image_progress(index, url, dest):
+        #    print(("Downloading Image %d" % index))
+        #    print(("    %s >> %s" % (url, dest)))
+        #downloader.on_image_download(print_image_progress)
 
         # Called when the downloads are all done.
-        def all_done():
-            print ("")
-            print ("Done!")
-        downloader.on_complete(all_done)
+        #def all_done():
+        #    print ("")
+        #    print ("Done!")
+        #downloader.on_complete(all_done)
 
         # Work out if we have a foldername or not:
         if len(args) == 3:
